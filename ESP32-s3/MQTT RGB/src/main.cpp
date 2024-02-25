@@ -96,5 +96,6 @@ void callback(char *topic, byte *payload, unsigned int length)
   sscanf(message, "%d %d %d", &r, &g, &b);
 
   // Sets onboard LED to values defined in message
+  Serial.printf("Setting onboard LED to: (%d, %d, %d)\n", r, g, b);
   neopixelWrite(RGB_BUILTIN, r, g, b);
 }
