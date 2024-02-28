@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <PubSubClient.h>
 #include <WiFi.h>
-#include <ESP32Servo.h>
+#include <ESP32_New_ISR_Servo.h>
 
 /* Create PrivateInfo.h in in ./include with values for:
     char ssid[]
@@ -22,28 +22,26 @@
 // PubSubClient instance
 WiFiClient espClient;
 PubSubClient client(espClient);
-// Servo
-Servo servo1;
-Servo servo2;
-Servo servo3;
 
 // Function prototypes here:
 void callback(char *topic, byte *payload, unsigned int length);
+
+int servoIndex1 = -1;
+int servoIndex2 = -1;
+int servoIndex3 = -1;
 
 void setup()
 {
   // Begin Serial
   Serial.begin(115200);
 
-  // setup servos
-  servo1.setPeriodHertz(50);
-  servo1.attach(motorPin1);
-  servo2.setPeriodHertz(50);
-  servo2.attach(motorPin2);
-  servo3.setPeriodHertz(50);
-  servo3.attach(motorPin3);
-
   delay(20);
+
+  ESP32_ISR_Servos.useTimer(3);
+
+  servoIndex1 = ESP32_ISR_Servos.setupServo(4);
+  servoIndex2 = ESP32_ISR_Servos.setupServo(5);
+  servoIndex3 = ESP32_ISR_Servos.setupServo(6);
 
   // Connect to WiFi
   Serial.print("Connecting to WiFi");
@@ -114,7 +112,7 @@ void callback(char *topic, byte *payload, unsigned int length)
 
   // Sets onboard LED to values defined in message
   Serial.printf("Setting arm to: (%d, %d, %d)\n", x, y, z);
-  servo1.write(x);
-  servo2.write(y);
-  servo3.write(z);
+  ESP32_ISR_Servos.setPosition(servoIndex1, x);
+  ESP32_ISR_Servos.setPosition(servoIndex2, y);
+  ESP32_ISR_Servos.setPosition(servoIndex3, z);
 }
