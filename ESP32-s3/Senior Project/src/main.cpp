@@ -94,7 +94,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   // char array to store payload
   char message[MaxMessageLength] = {'0'};
   // ints to store rgb values
-  int x = 0, y = 0, z = 0;
+  float x = 0, y = 0, z = 0;
 
   // Trims message down to be under MaxMessageLength
   if (length > MaxMessageLength)
@@ -107,11 +107,11 @@ void callback(char *topic, byte *payload, unsigned int length)
     message[i] = (char)payload[i];
   }
 
-  // Gets rgb values from message
-  sscanf(message, "%d %d %d", &x, &y, &z);
+  // Gets servo values from message
+  sscanf(message, "%f %f %f", &x, &y, &z);
 
   // Sets onboard LED to values defined in message
-  Serial.printf("Setting arm to: (%d, %d, %d)\n", x, y, z);
+  Serial.printf("Setting arm to: (%f, %f, %f)\n", x, y, z);
   ESP32_ISR_Servos.setPosition(servoIndex1, x);
   ESP32_ISR_Servos.setPosition(servoIndex2, y);
   ESP32_ISR_Servos.setPosition(servoIndex3, z);
